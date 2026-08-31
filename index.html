@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Precios agropecuarios · Bolivia</title>
+<title>Agricultural Prices · Bolivia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -142,7 +142,7 @@
     border-radius:var(--radius);
   }
 
-  /* FOB / FCA product cards (Hoja de costos Rosario / Lima) — based on the
+  /* FOB / FCA product cards (Rosario / Lima cost sheet) — based on the
      provided sketch: a two-line label block on top, divided from a big
      number below, restyled to match the page's dark theme. */
   .market-title{
@@ -191,9 +191,9 @@
     grid-template-columns:repeat(3, 1fr);
     gap:14px;
   }
-  /* column-stacked layout for Mercado Exterior: N columns, each holding
-     its own vertical stack of square cards (unlike fob-section-grid,
-     which fills left-to-right row by row). */
+  /* column-stacked layout for the Foreign Market section: N columns, each
+     holding its own vertical stack of square cards (unlike
+     fob-section-grid, which fills left-to-right row by row). */
   .stack-grid{
     display:flex;
     gap:14px;
@@ -204,18 +204,6 @@
     display:flex;
     flex-direction:column;
     gap:14px;
-  }
-  /* centered row for standalone cards not tied to the grid's columns
-     (Costo FCA SCZ Grano / Costo de Maquila) — natural card width, just
-     centered as a group rather than stretched into the column layout. */
-  .centered-row{
-    display:flex;
-    justify-content:center;
-    gap:14px;
-    margin-bottom:24px;
-  }
-  .centered-row .fob-card{
-    flex:0 1 220px;
   }
   @media (max-width:640px){
     .stack-grid{flex-wrap:wrap;}
@@ -283,7 +271,7 @@
     color:var(--text-dim);
   }
   /* split card body — two subsections side by side under one header,
-     e.g. Mercado Exterior's "Mercado" value next to its "FCA SC" value */
+     e.g. the Foreign Market's own value next to its "FCA SC" value */
   .fob-card .fob-card-body.split{
     display:flex;
     padding:0;
@@ -337,29 +325,6 @@
   .section-divider.divider-soy{ --divider-color: var(--soy); }
   .section-divider.divider-freight{ --divider-color: var(--freight); }
 
-  /* manual entry module */
-  #manual-entry{
-    padding-top:8px;
-  }
-  .entry-card{
-    background:var(--bg-panel);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:28px;
-  }
-  .entry-cta{
-    display:inline-block;
-    margin-top:4px;
-    padding:12px 24px;
-    background:var(--grain);
-    color:#1A1500;
-    font-weight:700;
-    text-decoration:none;
-    border-radius:4px;
-    font-family:'JetBrains Mono', monospace;
-    font-size:13px;
-  }
-  .entry-cta:hover{opacity:0.9;}
   @media (max-width:640px){
     header{padding:32px 20px 24px;}
     main{padding:0 20px;}
@@ -370,42 +335,40 @@
 <body>
 
 <header>
-  <div class="eyebrow">Reporte de mercado · actualizado periódicamente</div>
-  <h1>Precios agropecuarios — Bolivia</h1>
-  <p>Costos de venta · maíz, sorgo y harinas · complejo soya FOB · fletes Lima / Arica</p>
+  <div class="eyebrow">Market report · updated periodically</div>
+  <h1>Agricultural Prices — Bolivia</h1>
+  <p>Sale costs · corn, sorghum and meals · soy complex FOB · Lima / Arica freight</p>
   <nav class="page-nav">
-    <a href="index.html" class="active">Actual</a>
-    <a href="historico.html">Histórico</a>
-    <a href="calculadora.html">Calculadora</a>
+    <a href="index.html" class="active">Current</a>
+    <a href="historico.html">Historical</a>
+    <a href="calculadora.html">Calculator</a>
   </nav>
 </header>
 
 <main>
 
   <section id="costos-section">
-    <span class="group-label costos">Precios de mercado</span>
+    <span class="group-label costos">Market prices</span>
 
-    <h2 class="market-title">Mercado Exterior</h2>
-    <div class="sub market-title">Soya grano, Harina Solvente y Aceite — Rosario / Chicago / Desaguadero, y bases vs. Chicago</div>
+    <h2 class="market-title">Foreign Market</h2>
+    <div class="sub market-title">Soybean grain, Solvent Meal and Oil — Rosario / Chicago / Desaguadero, and bases vs. Chicago</div>
 
     <div id="mercadoExtPreciosGrid" class="stack-grid"></div>
-
-    <div id="mercadoExtResumenRow" class="centered-row"></div>
 
     <div class="subtle-divider"></div>
 
     <div id="mercadoExtBaseGrid" class="stack-grid"></div>
 
-    <div id="mercadoExtEmpty" class="empty-state">Aún no hay datos de Mercado Exterior. Se toman de la hoja Mercado Exterior.</div>
+    <div id="mercadoExtEmpty" class="empty-state">No Foreign Market data yet. Sourced from the Foreign Market sheet.</div>
 
-    <p class="footnote">*Mercado: precio tomado directamente de la página de referencia correspondiente. FCA SC: ese mismo precio, neto de los costos de exportación y transporte aplicables (FCA Santa Cruz).</p>
+    <p class="footnote">*Market: price taken directly from the corresponding reference page. FCA SC: that same price, net of applicable export and transport costs (FCA Santa Cruz).</p>
 
     <div class="double-line-divider"></div>
-    <h2 class="market-title">Venta de soja — mercado Rosario</h2>
-    <div class="sub market-title">FOB Pto Aguirre y FCA SCZ (Montero) por producto</div>
+    <h2 class="market-title">Soybean Sales — Rosario Market</h2>
+    <div class="sub market-title">FOB Puerto Aguirre and FCA SCZ (Montero) by product</div>
 
     <div class="fob-subsection">
-      <div class="fob-subsection-label">FOB Pto Aguirre</div>
+      <div class="fob-subsection-label">FOB Puerto Aguirre</div>
       <div id="fobGridFob" class="fob-section-grid"></div>
     </div>
 
@@ -416,13 +379,13 @@
       <div id="fobGridFca" class="fob-section-grid"></div>
     </div>
 
-    <div id="fobEmpty" class="empty-state">Aún no hay datos de FOB / FCA. Se toman de la hoja de costos Rosario.</div>
+    <div id="fobEmpty" class="empty-state">No FOB / FCA data yet. Sourced from the Rosario cost sheet.</div>
 
     <div class="double-line-divider lima-subsection"></div>
 
     <div class="lima-subsection" style="text-align:center;">
-      <div class="costos-subhead">Venta de soja — mercado Desaguadero</div>
-      <div class="sub">FOB Desaguadero y FCA SCZ (Montero) por producto</div>
+      <div class="costos-subhead">Soybean Sales — Desaguadero Market</div>
+      <div class="sub">FOB Desaguadero and FCA SCZ (Montero) by product</div>
     </div>
 
     <div class="fob-subsection lima-subsection">
@@ -437,68 +400,60 @@
       <div id="limaGridFca" class="fob-section-grid"></div>
     </div>
 
-    <div id="limaEmpty" class="empty-state">Aún no hay datos de costos de Desaguadero. Se toman de la hoja de costos Lima.</div>
+    <div id="limaEmpty" class="empty-state">No Desaguadero cost data yet. Sourced from the Lima cost sheet.</div>
   </section>
 
   <div class="section-divider divider-grain"></div>
 
   <section id="grains-section">
-    <span class="group-label grain">Granos</span>
-    <h2>Maíz, sorgo y harinas</h2>
+    <span class="group-label grain">Grains</span>
+    <h2>Corn, sorghum and meals</h2>
     <div class="sub">Cochabamba · Santa Cruz · Anapo</div>
     <div class="chart-panel">
       <div id="grainsFilters" class="chart-filters"></div>
       <canvas id="grainsChart"></canvas>
-      <div id="grainsEmpty" class="empty-state">Aún no hay datos. Agregue un registro con el formulario abajo.</div>
+      <div id="grainsEmpty" class="empty-state">No data yet. Add an entry using the form below.</div>
     </div>
   </section>
 
   <div class="section-divider divider-soy"></div>
 
   <section id="soy-section">
-    <span class="group-label soy">Complejo soya</span>
-    <h2>Soya, aceite y torta — FOB</h2>
-    <div class="sub">Perú · Bolivia · Chicago · Argentina</div>
+    <span class="group-label soy">Soy complex</span>
+    <h2>Soybean, oil and cake — FOB</h2>
+    <div class="sub">Peru · Bolivia · Chicago · Argentina</div>
     <div class="chart-panel">
       <div id="soyFilters" class="chart-filters"></div>
       <canvas id="soyChart"></canvas>
-      <div id="soyEmpty" class="empty-state">Aún no hay datos. Agregue un registro con el formulario abajo.</div>
+      <div id="soyEmpty" class="empty-state">No data yet. Add an entry using the form below.</div>
     </div>
   </section>
 
   <div class="section-divider divider-freight"></div>
 
   <section id="freight-section">
-    <span class="group-label freight">Fletes</span>
-    <h2>Lima y Arica</h2>
+    <span class="group-label freight">Freight</span>
+    <h2>Lima and Arica</h2>
     <div class="chart-panel">
       <div id="freightFilters" class="chart-filters"></div>
       <canvas id="freightChart"></canvas>
-      <div id="freightEmpty" class="empty-state">Aún no hay datos. Agregue un registro con el formulario abajo.</div>
+      <div id="freightEmpty" class="empty-state">No data yet. Add an entry using the form below.</div>
     </div>
   </section>
 
   <div class="section-divider"></div>
 
-  <section id="manual-entry">
-    <h2>Agregar datos manualmente</h2>
-    <div class="sub">Use el formulario para registrar nuevos precios. Los datos se sincronizan al panel automáticamente cada hora.</div>
-    <div class="entry-card">
-      <a class="entry-cta" href="https://forms.gle/GqhYcpGjx5DVxvRJ9" target="_blank" rel="noopener">
-        Abrir formulario de registro →
-      </a>
-    </div>
-  </section>
+  <p class="footnote" style="text-align:center; margin-top:32px;">This is a static snapshot of the dashboard as of August 2026 — it no longer syncs with any live data source.</p>
 
 </main>
 
 <script>
 // ---- field schema (kept so chart rendering can group price series) ----
 const GRAIN_PRODUCTS = [
-  {key:'maiz', label:'Maíz'},
-  {key:'sorgo', label:'Sorgo'},
-  {key:'harina_integral', label:'H. Integral'},
-  {key:'harina_solvente', label:'H. Solvente'},
+  {key:'maiz', label:'Corn'},
+  {key:'sorgo', label:'Sorghum'},
+  {key:'harina_integral', label:'Whole Meal'},
+  {key:'harina_solvente', label:'Solvent Meal'},
 ];
 const GRAIN_REGIONS = [
   {key:'cbba', label:'Cochabamba'},
@@ -506,12 +461,12 @@ const GRAIN_REGIONS = [
   {key:'anapo', label:'Anapo'},
 ];
 const SOY_PRODUCTS = [
-  {key:'soya_fob', label:'Soya FOB'},
-  {key:'aceite_fob', label:'Aceite FOB'},
-  {key:'torta_soya_fob', label:'Torta de soya FOB'},
+  {key:'soya_fob', label:'Soybean FOB'},
+  {key:'aceite_fob', label:'Oil FOB'},
+  {key:'torta_soya_fob', label:'Soybean Cake FOB'},
 ];
 const SOY_REGIONS = [
-  {key:'peru', label:'Perú'},
+  {key:'peru', label:'Peru'},
   {key:'bolivia', label:'Bolivia'},
   {key:'chicago', label:'Chicago'},
   {key:'argentina', label:'Argentina'},
@@ -521,20 +476,22 @@ const FREIGHT_ROUTES = [
   {key:'arica', label:'Arica'},
 ];
 
-// "Hoja de costos Rosario" — per-product FOB / FCA cards
+// Rosario cost sheet — per-product FOB / FCA cards
 const VENTA_SOJA_PRODUCTS = [
-  {key:'grano', label:'Grano', color:'var(--soy)'},
-  {key:'solvente', label:'Solvente', color:'var(--freight)'},
-  {key:'aceite', label:'Aceite', color:'var(--grain)'},
+  {key:'grano', label:'Grain', color:'var(--soy)'},
+  {key:'solvente', label:'Solvent', color:'var(--freight)'},
+  {key:'aceite', label:'Oil', color:'var(--grain)'},
 ];
 
 // ---- charts -----------------------------------------------------------
+// Static snapshot of the former processed/history.json feed, frozen as of
+// August 2026. This page no longer fetches anything — it was disconnected
+// from the live Google Sheets/Forms pipeline so it can stand on its own
+// as a portfolio piece.
+const HISTORY_DATA = [{"date":"01/06/2026","source_file":"google-form","grains":{"maiz":{"scz":84.0},"sorgo":{"scz":85.5},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"01/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":116.0,"scz":89.5},"sorgo":{"cbba":108.0,"scz":0.0},"harina_integral":{"scz":3625.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"01/08/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"02/05/2026","source_file":"google-form","grains":{"maiz":{"scz":100.0},"harina_integral":{"cbba":4160.0,"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"02/06/2026","source_file":"google-form","grains":{"maiz":{"scz":84.0},"sorgo":{"scz":85.5},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"02/07/2026","source_file":"google-form","grains":{"maiz":{"scz":89.5},"sorgo":{"scz":79.0},"harina_integral":{"scz":3625.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"02/08/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"03/05/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4160.0,"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"03/06/2026","source_file":"google-form","grains":{"maiz":{"scz":84.0},"sorgo":{"scz":85.5},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"03/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":117.0,"scz":89.5},"sorgo":{"cbba":108.0,"scz":79.0},"harina_integral":{"scz":3625.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"03/08/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"04/05/2026","source_file":"google-form","grains":{"maiz":{"scz":83.0},"sorgo":{"scz":85.0},"harina_integral":{"cbba":4160.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"04/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"04/07/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4325.0},"harina_solvente":{"cbba":3870.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"04/08/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"05/05/2026","source_file":"google-form","grains":{"maiz":{"scz":83.0},"sorgo":{"scz":85.0},"harina_integral":{"cbba":4160.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"05/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"05/07/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"05/08/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"06/05/2026","source_file":"google-form","grains":{"maiz":{"cbba":109.0,"scz":84.5},"sorgo":{"scz":85.5},"harina_integral":{"cbba":4160.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"06/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"06/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":120.0},"sorgo":{"cbba":106.0,"scz":77.5},"harina_integral":{"cbba":4325.0,"scz":3625.0},"harina_solvente":{"cbba":3770.0,"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"06/08/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"07/05/2026","source_file":"google-form","grains":{"maiz":{"scz":84.5},"sorgo":{"scz":85.5},"harina_integral":{"cbba":4160.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"07/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"07/07/2026","source_file":"google-form","grains":{"harina_integral":{"scz":3625.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"08/05/2026","source_file":"google-form","grains":{"maiz":{"scz":84.5},"sorgo":{"scz":85.5},"harina_integral":{"cbba":4160.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"08/06/2026","source_file":"google-form","grains":{"maiz":{"scz":84.0},"sorgo":{"scz":85.5},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"08/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":117.0},"sorgo":{"cbba":105.0,"scz":78.0},"harina_integral":{"scz":3625.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"09/05/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4160.0,"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"09/06/2026","source_file":"google-form","grains":{"maiz":{"scz":84.0},"sorgo":{"scz":80.0},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"09/07/2026","source_file":"google-form","grains":{"harina_integral":{"scz":3625.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"10/05/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4160.0,"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"10/06/2026","source_file":"google-form","grains":{"maiz":{"scz":85.0},"sorgo":{"scz":79.0},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"10/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":115.0},"sorgo":{"cbba":104.0,"scz":75.5},"harina_integral":{"scz":3625.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"11/05/2026","source_file":"google-form","grains":{"maiz":{"cbba":112.0,"scz":86.0},"sorgo":{"cbba":109.0},"harina_integral":{"cbba":4200.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"11/06/2026","source_file":"google-form","grains":{"maiz":{"scz":85.0},"sorgo":{"scz":79.0},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"12/05/2026","source_file":"google-form","grains":{"maiz":{"scz":87.5},"harina_integral":{"cbba":4200.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"12/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"13/05/2026","source_file":"google-form","grains":{"maiz":{"cbba":109.0,"scz":87.5},"sorgo":{"scz":94.0},"harina_integral":{"cbba":4200.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"13/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"13/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":113.0,"scz":84.5},"sorgo":{"cbba":95.0,"scz":73.5},"harina_integral":{"cbba":4325.0,"scz":3625.0},"harina_solvente":{"cbba":3765.0,"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"14/05/2026","source_file":"google-form","grains":{"maiz":{"scz":87.5},"sorgo":{"scz":94.0},"harina_integral":{"cbba":4200.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"14/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"14/07/2026","source_file":"google-form","grains":{"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"15/05/2026","source_file":"google-form","grains":{"maiz":{"scz":85.5},"sorgo":{"scz":89.0},"harina_integral":{"cbba":4200.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"15/06/2026","source_file":"google-form","grains":{"maiz":{"scz":85.0},"sorgo":{"scz":79.0},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"15/07/2026","source_file":"google-form","grains":{"maiz":{"scz":83.5},"sorgo":{"scz":75.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"16/05/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4200.0,"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"16/06/2026","source_file":"google-form","grains":{"maiz":{"scz":85.0},"sorgo":{"scz":79.0},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"16/07/2026","source_file":"google-form","grains":{"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"17/05/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4200.0,"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"17/06/2026","source_file":"google-form","grains":{"maiz":{"scz":85.0},"sorgo":{"scz":79.0},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"17/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":108.0,"scz":85.0},"sorgo":{"cbba":94.0,"scz":72.5},"harina_integral":{"cbba":4325.0},"harina_solvente":{"cbba":3765.0,"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"18/05/2026","source_file":"google-form","grains":{"maiz":{"cbba":108.0,"scz":87.5},"sorgo":{"cbba":106.0,"scz":93.0},"harina_integral":{"cbba":4600.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"18/06/2026","source_file":"google-form","grains":{"maiz":{"scz":85.0},"sorgo":{"scz":79.0},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"18/07/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"19/05/2026","source_file":"google-form","grains":{"maiz":{"scz":87.5},"sorgo":{"scz":93.0},"harina_integral":{"cbba":4600.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"19/06/2026","source_file":"google-form","grains":{"maiz":{"scz":82.5},"sorgo":{"scz":76.5},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"19/07/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"20/05/2026","source_file":"google-form","grains":{"maiz":{"cbba":108.0,"scz":86.0},"sorgo":{"scz":94.0},"harina_integral":{"cbba":4600.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"20/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"20/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":105.0,"scz":84.0},"sorgo":{"cbba":92.0,"scz":67.5},"harina_integral":{"cbba":4325.0,"scz":3725.0},"harina_solvente":{"cbba":3765.0,"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"2026-08-30","source_file":"costos-sheets","grains":{},"soy_complex":{},"freight":{},"costos":{"venta_soja_rosario":{"costo_g_industrial":320.78,"fob_pto_aguirre":{"aceite":1077.63,"solvente":286.97,"grano":378.43},"costo_exp":{"aceite":60.91,"solvente":46.85,"grano":46.85},"fca_scz_montero":{"aceite":1016.72,"solvente":240.12,"grano":331.58}},"venta_soja_lima":{"costo_g_industrial":381.28,"fob_desaguadero":{"aceite":1174.12,"solvente":350.03,"grano":431.39},"costo_exp":{"aceite":70.0,"solvente":50.0,"grano":50.0},"fca_scz_montero":{"aceite":1104.12,"solvente":300.03,"grano":381.39},"costo_total_transporte":{"aceite":0.0,"solvente":0.0,"grano":0.0}},"mercado_exterior":{"precios":{"rosario":{"soya_grano":487.89,"harina_solvente":376.1,"aceite":1190.5},"chicago":{"soya_grano":470.157,"harina_solvente":380.183,"aceite":1544.558},"desaguadero":{"soya_grano":431.39,"harina_solvente":350.03,"aceite":1174.12}},"base":{"rosario_chicago":{"soya_grano":17.733,"harina_solvente":-4.083,"aceite":-354.06},"desaguadero_chicago":{"soya_grano":-38.77,"harina_solvente":-30.15,"aceite":-370.44}}},"recepcion_datos":{"min":{"grano":336.43,"solvente":277.47,"aceite":1035.0},"max":{"grano":467.36,"solvente":379.9,"aceite":1254.07}}}},{"date":"21/05/2026","source_file":"google-form","grains":{"maiz":{"scz":86.0},"sorgo":{"scz":94.0},"harina_integral":{"cbba":4600.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"21/06/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"21/07/2026","source_file":"google-form","grains":{"harina_integral":{"scz":3825.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"22/05/2026","source_file":"google-form","grains":{"maiz":{"cbba":109.0,"scz":86.0},"sorgo":{"cbba":106.0,"scz":94.0},"harina_integral":{"cbba":4600.0,"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"22/06/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4300.0,"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"22/07/2026","source_file":"google-form","grains":{"maiz":{"scz":84.0},"sorgo":{"scz":67.5},"harina_integral":{"scz":3825.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"23/05/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4600.0,"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"23/06/2026","source_file":"google-form","grains":{"maiz":{"scz":82.5},"sorgo":{"scz":76.5},"harina_integral":{"cbba":4300.0,"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"23/07/2026","source_file":"google-form","grains":{"harina_integral":{"scz":3825.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"24/05/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4600.0,"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"24/06/2026","source_file":"google-form","grains":{"maiz":{"cbba":115.0,"scz":84.0},"sorgo":{"scz":76.5},"harina_integral":{"cbba":4300.0,"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"24/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":101.0,"scz":84.0},"sorgo":{"cbba":91.0,"scz":70.5},"harina_integral":{"cbba":4325.0,"scz":3825.0},"harina_solvente":{"cbba":3765.0,"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"25/05/2026","source_file":"google-form","grains":{"maiz":{"cbba":106.0,"scz":86.5},"sorgo":{"scz":91.0},"harina_integral":{"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"25/06/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4300.0,"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"25/07/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"26/05/2026","source_file":"google-form","grains":{"maiz":{"scz":86.5},"sorgo":{"scz":91.0},"harina_integral":{"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"26/06/2026","source_file":"google-form","grains":{"maiz":{"cbba":117.0,"scz":83.5},"sorgo":{"scz":76.5},"harina_integral":{"cbba":4300.0,"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"26/07/2026","source_file":"google-form","grains":{},"soy_complex":{},"freight":{},"costos":{}},{"date":"27/05/2026","source_file":"google-form","grains":{"maiz":{"scz":87.0},"sorgo":{"scz":91.0},"harina_integral":{"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"27/06/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4300.0,"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"27/07/2026","source_file":"google-form","grains":{"maiz":{"scz":84.0},"sorgo":{"scz":70.0},"harina_integral":{"cbba":4300.0,"scz":3825.0},"harina_solvente":{"cbba":3950.0,"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"28/05/2026","source_file":"google-form","grains":{"maiz":{"scz":87.0},"sorgo":{"scz":91.0},"harina_integral":{"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"28/06/2026","source_file":"google-form","grains":{"harina_integral":{"cbba":4300.0,"anapo":3380.45},"harina_solvente":{"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"28/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":98.0},"sorgo":{"cbba":89.0},"harina_integral":{"scz":3825.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"29/05/2026","source_file":"google-form","grains":{"maiz":{"scz":87.0},"sorgo":{"scz":91.0},"harina_integral":{"scz":3625.0,"anapo":3185.29},"harina_solvente":{"scz":3225.0,"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"29/06/2026","source_file":"google-form","grains":{"maiz":{"cbba":114.0,"scz":85.5},"sorgo":{"cbba":110.0,"scz":78.5},"harina_integral":{"scz":3625.0,"anapo":3380.45},"harina_solvente":{"scz":3225.0,"anapo":2895.36}},"soy_complex":{},"freight":{},"costos":{}},{"date":"29/07/2026","source_file":"google-form","grains":{"maiz":{"scz":82.5},"sorgo":{"scz":67.0},"harina_integral":{"scz":3825.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"30/05/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"30/06/2026","source_file":"google-form","grains":{"maiz":{"scz":85.5},"sorgo":{"scz":78.5},"harina_integral":{"cbba":4400.0,"scz":3625.0,"anapo":4733.6},"harina_solvente":{"cbba":3900.0,"scz":3225.0,"anapo":4060.16}},"soy_complex":{},"freight":{},"costos":{}},{"date":"30/07/2026","source_file":"google-form","grains":{"harina_integral":{"scz":3825.0},"harina_solvente":{"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}},{"date":"31/05/2026","source_file":"google-form","grains":{"harina_integral":{"anapo":3185.29},"harina_solvente":{"anapo":2665.68}},"soy_complex":{},"freight":{},"costos":{}},{"date":"31/07/2026","source_file":"google-form","grains":{"maiz":{"cbba":102.0,"scz":82.5},"sorgo":{"cbba":87.0,"scz":67.0},"harina_integral":{"cbba":4300.0,"scz":3825.0},"harina_solvente":{"cbba":3975.0,"scz":3225.0}},"soy_complex":{},"freight":{},"costos":{}}];
+
 async function loadHistory(){
-  try {
-    const res = await fetch('processed/history.json', {cache:'no-store'});
-    if (!res.ok) return [];
-    return await res.json();
-  } catch { return []; }
+  return HISTORY_DATA;
 }
 
 // The "date" field mixes two formats depending on its source: ISO
@@ -599,8 +556,8 @@ function toggleEmpty(id, hasData){
   document.getElementById(id).style.display = hasData ? 'none' : 'block';
 }
 
-// Builds "Todos" + one chip per dataset. Clicking a chip isolates that
-// line (hides the rest); clicking "Todos" restores all of them.
+// Builds "All" + one chip per dataset. Clicking a chip isolates that
+// line (hides the rest); clicking "All" restores all of them.
 function renderFilterChips(containerId, chartGetter, datasets){
   const container = document.getElementById(containerId);
   container.innerHTML = '';
@@ -614,7 +571,7 @@ function renderFilterChips(containerId, chartGetter, datasets){
   const allBtn = document.createElement('button');
   allBtn.type = 'button';
   allBtn.className = 'filter-chip active';
-  allBtn.textContent = 'Todos';
+  allBtn.textContent = 'All';
   allBtn.addEventListener('click', () => {
     const chart = chartGetter();
     chart.data.datasets.forEach(ds => ds.hidden = false);
@@ -702,34 +659,34 @@ const MERCADO_EXT_MARKETS = [
   {key:'desaguadero', label:'Desaguadero', color:'var(--grain)'},
 ];
 const MERCADO_EXT_PRODUCTS = [
-  {key:'soya_grano', label:'Soya grano'},
-  {key:'harina_solvente', label:'Harina Solvente'},
-  {key:'aceite', label:'Aceite'},
+  {key:'soya_grano', label:'Soybean grain'},
+  {key:'harina_solvente', label:'Solvent Meal'},
+  {key:'aceite', label:'Oil'},
 ];
 const MERCADO_EXT_BASES = [
-  {key:'rosario_chicago', label:'Base Rosario − Chicago', color:'var(--costos)', route:'venta_soja_rosario'},
-  {key:'desaguadero_chicago', label:'Base Desaguadero − Chicago', color:'var(--grain)', route:'venta_soja_lima'},
+  {key:'rosario_chicago', label:'Rosario − Chicago Basis', color:'var(--costos)', route:'venta_soja_rosario'},
+  {key:'desaguadero_chicago', label:'Desaguadero − Chicago Basis', color:'var(--grain)', route:'venta_soja_lima'},
 ];
-// Mercado Exterior uses "soya_grano/harina_solvente/aceite"; the Venta de
-// soja (Rosario/Lima) sections use "grano/solvente/aceite" for the same
-// products — this maps one to the other.
+// The Foreign Market section uses "soya_grano/harina_solvente/aceite";
+// the Soybean Sales (Rosario/Lima) sections use "grano/solvente/aceite"
+// for the same products — this maps one to the other.
 const MERCADO_EXT_TO_VENTA_PRODUCT = {
   soya_grano: 'grano',
   harina_solvente: 'solvente',
   aceite: 'aceite',
 };
 
-// Mercado Exterior: two column-stacked grids read as-is from the
+// Foreign Market: two column-stacked grids read as-is from the
 // "MercadoExterior" sheet — no computation, just display.
-// Grid 1: one column per product (Grano/Solvente/Aceite), each holding
+// Grid 1: one column per product (Grain/Solvent/Oil), each holding
 // its 3 market prices stacked vertically (Chicago/Rosario/Desaguadero).
 // Rosario and Desaguadero cards are split — the page's own value next to
-// the matching FCA SCZ (Montero) value already shown under "Venta de
-// soja", so both are visible without scrolling. Chicago has no such
+// the matching FCA SCZ (Montero) value already shown under "Soybean
+// Sales", so both are visible without scrolling. Chicago has no such
 // counterpart, so it stays a plain single-value card.
 // Grid 2: one column per base type (Rosario-Chicago, Desaguadero-Chicago),
 // each holding its 3 product values stacked vertically, also split — the
-// base value next to that route's "Costo total transporte" value.
+// base value next to that route's "total transport cost" value.
 function renderMercadoExterior(all){
   const withData = all.filter(s => s.costos && s.costos.mercado_exterior);
   const hasData = withData.length > 0;
@@ -737,16 +694,14 @@ function renderMercadoExterior(all){
 
   const preciosGrid = document.getElementById('mercadoExtPreciosGrid');
   const baseGrid = document.getElementById('mercadoExtBaseGrid');
-  const resumenRow = document.getElementById('mercadoExtResumenRow');
   preciosGrid.innerHTML = '';
   baseGrid.innerHTML = '';
-  resumenRow.innerHTML = '';
   if (!hasData) return;
 
   const latest = withData[withData.length - 1];
   const mx = latest.costos.mercado_exterior;
 
-  // Latest snapshot per route, for the "FCA SC" / "Costo total transporte" values.
+  // Latest snapshot per route, for the "FCA SC" / "total transport cost" values.
   const rosarioData = all.filter(s => s.costos && s.costos.venta_soja_rosario);
   const limaData = all.filter(s => s.costos && s.costos.venta_soja_lima);
   const latestByRoute = {
@@ -754,11 +709,6 @@ function renderMercadoExterior(all){
     venta_soja_lima: limaData.length ? limaData[limaData.length - 1].costos.venta_soja_lima : null,
   };
   const routeByMarket = { rosario: 'venta_soja_rosario', desaguadero: 'venta_soja_lima' };
-
-  // "Resumen operaciones" sheet - Costo FCA SCZ Grano / Costo de Maquila.
-  const resumenData = all.filter(s => s.costos && s.costos.resumen_operaciones);
-  const latestResumen = resumenData.length ? resumenData[resumenData.length - 1] : null;
-  const resumen = latestResumen ? latestResumen.costos.resumen_operaciones : null;
 
   const precios = mx.precios || {};
   MERCADO_EXT_PRODUCTS.forEach(p => {
@@ -781,14 +731,14 @@ function renderMercadoExterior(all){
         const bCosto = ventaData && ventaData.fca_scz_montero ? ventaData.fca_scz_montero[ventaProduct] : undefined;
         column.appendChild(buildSplitFobCard(
           p.label, market.label,
-          'Mercado', pageValue,
+          'Market', pageValue,
           'FCA SC', bCosto !== undefined ? bCosto.toFixed(2) : '—',
           market.color
         ));
       } else {
         column.appendChild(buildFobCard(
           p.label, market.label, pageValue,
-          val !== undefined ? `USD/tm · ${toDayMonthYY(latest.date)}` : 'sin dato',
+          val !== undefined ? `USD/MT · ${toDayMonthYY(latest.date)}` : 'no data',
           market.color
         ));
       }
@@ -796,28 +746,6 @@ function renderMercadoExterior(all){
 
     preciosGrid.appendChild(column);
   });
-
-  // Costo FCA SCZ Grano / Costo de Maquila: a centered row below the main
-  // grid, not tied to the column layout above.
-  if (resumen) {
-    const resumenDate = toDayMonthYY(latestResumen.date);
-    if (resumen.costo_fca_scz_grano !== undefined) {
-      resumenRow.appendChild(buildFobCard(
-        'Costo FCA SCZ', 'Grano',
-        resumen.costo_fca_scz_grano.toFixed(2),
-        `USD/tm · ${resumenDate}`,
-        'var(--costos)'
-      ));
-    }
-    if (resumen.costo_de_maquila !== undefined) {
-      resumenRow.appendChild(buildFobCard(
-        'Costo de', 'Maquila',
-        resumen.costo_de_maquila.toFixed(2),
-        `USD/tm · ${resumenDate}`,
-        'var(--costos)'
-      ));
-    }
-  }
 
   const base = mx.base || {};
   MERCADO_EXT_BASES.forEach(b => {
@@ -836,9 +764,9 @@ function renderMercadoExterior(all){
       const costoTransporte = ventaData && ventaData.costo_total_transporte ? ventaData.costo_total_transporte[ventaProduct] : undefined;
 
       column.appendChild(buildSplitFobCard(
-        'Base', p.label,
-        'Base', val !== undefined ? val.toFixed(2) : '—',
-        'Costo transp.', costoTransporte !== undefined ? costoTransporte.toFixed(2) : '—',
+        'Basis', p.label,
+        'Basis', val !== undefined ? val.toFixed(2) : '—',
+        'Transport cost', costoTransporte !== undefined ? costoTransporte.toFixed(2) : '—',
         b.color
       ));
     });
@@ -870,8 +798,8 @@ function buildFobCard(l1, l2, value, unit, color, extraClass, minVal, maxVal){
 }
 
 // Same header as buildFobCard, but the body is split into two
-// subsections side by side — e.g. Mercado Exterior's own page value next
-// to the corresponding build-de-costo value, so both are visible without
+// subsections side by side — e.g. the Foreign Market's own page value
+// next to the corresponding cost value, so both are visible without
 // having to scroll to a different section.
 function buildSplitFobCard(l1, l2, leftLabel, leftValue, rightLabel, rightValue, color){
   const card = document.createElement('div');
@@ -896,21 +824,21 @@ function buildSplitFobCard(l1, l2, leftLabel, leftValue, rightLabel, rightValue,
   return card;
 }
 
-// "G - costo de G industrial": < 0 -> INDUSTRIAL, >= 0 -> GRANOS. Returns
+// "G - industrial G cost": < 0 -> INDUSTRIAL, >= 0 -> GRAIN. Returns
 // null while either input is missing, so the box can show a placeholder
 // instead of a wrong result.
 function computeIndG(granoVal, costoVal){
   if (granoVal === undefined || costoVal === undefined || costoVal === null) return null;
-  return (granoVal - costoVal) < 0 ? 'INDUSTRIAL' : 'GRANOS';
+  return (granoVal - costoVal) < 0 ? 'INDUSTRIAL' : 'GRAIN';
 }
 
 // Renders one metric's row: 3 product cards, and — only when
-// includeDecision is true — a wide "Costo de G industrial" box (spans the
-// Aceite+Solvente columns) and an INDUSTRIAL/GRANOS result box (Grano
+// includeDecision is true — a wide "Industrial G cost" box (spans the
+// Oil+Solvent columns) and an INDUSTRIAL/GRAIN result box (Grain
 // column). That comparison only applies to the FCA SCZ (Montero) stage.
 // `minMax` (optional) is {min:{grano,solvente,aceite}, max:{...}} — only
 // passed for the FOB Desaguadero row, to show the Min/Max footer from
-// the "Recepción de datos" sheet.
+// the intake data sheet.
 function renderVentaSojaSection(containerId, metricLabel, values, costoGIndustrial, date, includeDecision, minMax){
   const grid = document.getElementById(containerId);
   grid.innerHTML = '';
@@ -924,7 +852,7 @@ function renderVentaSojaSection(containerId, metricLabel, values, costoGIndustri
     grid.appendChild(buildFobCard(
       metricLabel, p.label,
       val !== undefined ? val.toFixed(2) : '—',
-      val !== undefined ? `USD/tm · ${displayDate}` : 'sin dato',
+      val !== undefined ? `USD/MT · ${displayDate}` : 'no data',
       p.color, null, minVal, maxVal
     ));
   });
@@ -934,27 +862,26 @@ function renderVentaSojaSection(containerId, metricLabel, values, costoGIndustri
   const costoDisplay = (costoGIndustrial !== undefined && costoGIndustrial !== null)
     ? costoGIndustrial.toFixed(2) : '—';
   grid.appendChild(buildFobCard(
-    'Costo de', 'G industrial',
+    'Cost of', 'Industrial G',
     costoDisplay,
-    costoDisplay === '—' ? 'por definir' : `USD/tm · ${displayDate}`,
+    costoDisplay === '—' ? 'to be defined' : `USD/MT · ${displayDate}`,
     'var(--costos)', 'span-2'
   ));
 
   const indG = computeIndG(values.grano, costoGIndustrial);
   const resultCard = buildFobCard(
-    'Resultado', 'Grano vs. industrial',
+    'Result', 'Grain vs. industrial',
     indG !== null ? indG : '—',
-    indG !== null ? 'Grano − costo < 0 → INDUSTRIAL' : 'pendiente costo G industrial',
+    indG !== null ? 'Grain − cost < 0 → INDUSTRIAL' : 'pending industrial G cost',
     'var(--soy)'
   );
   resultCard.querySelector('.value').classList.add('result-text');
   grid.appendChild(resultCard);
 }
 
-// Costos: FOB Pto Aguirre / FCA SCZ (Montero), each in its own section,
-// read as-is from the "Hoja de costos Rosario" sheet. The costo de G
-// industrial / INDUSTRIAL-GRANOS comparison only exists for the FCA stage
-// (rows "Precio del grano procesado FCA SCZ para Rosario" etc.), so it's
+// Costs: FOB Puerto Aguirre / FCA SCZ (Montero), each in its own section,
+// read as-is from the Rosario cost sheet. The industrial G cost /
+// INDUSTRIAL-GRAIN comparison only exists for the FCA stage, so it's
 // only rendered under the FCA section.
 function renderVentaSoja(all){
   const withData = all.filter(s => s.costos && s.costos.venta_soja_rosario);
@@ -966,17 +893,17 @@ function renderVentaSoja(all){
 
   const latest = withData[withData.length - 1];
   const venta = latest.costos.venta_soja_rosario;
-  // Fetched from the sheet as a plain scalar (row "Precio del grano
-  // procesado FCA SCZ para Rosario"), not split by product.
+  // Fetched from the sheet as a plain scalar, not split by product.
   const costoGIndustrial = venta.costo_g_industrial;
 
-  renderVentaSojaSection('fobGridFob', 'FOB Pto Aguirre', venta.fob_pto_aguirre, costoGIndustrial, latest.date, false);
+  renderVentaSojaSection('fobGridFob', 'FOB Puerto Aguirre', venta.fob_pto_aguirre, costoGIndustrial, latest.date, false);
   renderVentaSojaSection('fobGridFca', 'FCA SCZ (Montero)', venta.fca_scz_montero, costoGIndustrial, latest.date, true);
 }
 
-// Venta de soja — mercado Desaguadero: FOB Desaguadero / FCA SCZ (Montero), same card pattern
-// as Rosario, read from its own sheet (costos.venta_soja_lima), including
-// its own Costo de G industrial / INDUSTRIAL-GRANOS decision.
+// Soybean Sales — Desaguadero Market: FOB Desaguadero / FCA SCZ (Montero),
+// same card pattern as Rosario, read from its own sheet
+// (costos.venta_soja_lima), including its own industrial G cost /
+// INDUSTRIAL-GRAIN decision.
 function renderCostosLima(all){
   const limaData = all.filter(s => s.costos && s.costos.venta_soja_lima);
   const hasData = limaData.length > 0;
