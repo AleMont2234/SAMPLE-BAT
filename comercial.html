@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comercial · Precios agropecuarios · Bolivia</title>
+<title>Commercial · Agricultural Prices · Bolivia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -263,77 +263,77 @@
 
 <header>
   <div class="stars">★ ★ ★ ★ ★</div>
-  <div class="eyebrow">Reporte de mercado · herramienta</div>
-  <h1>Precios agropecuarios — Bolivia</h1>
-  <p>Calculadora de descuento por calidad de grano — Soya / Maíz / Sorgo</p>
+  <div class="eyebrow">Market report · tool</div>
+  <h1>Agricultural Prices — Bolivia</h1>
+  <p>Grain quality discount calculator — Soybean / Corn / Sorghum</p>
   <nav class="page-nav">
-    <a href="index.html">Actual</a>
-    <a href="historico.html">Histórico</a>
-    <a href="calculadora.html">Calculadora</a>
-    <a href="comercial.html" class="active">Comercial</a>
+    <a href="index.html">Current</a>
+    <a href="historico.html">Historical</a>
+    <a href="calculadora.html">Calculator</a>
+    <a href="comercial.html" class="active">Commercial</a>
   </nav>
 </header>
 
 <main>
 
   <section>
-    <span class="group-label">Comercial</span>
-    <h2>Descuento por humedad e impureza</h2>
-    <div class="sub">Calcula el peso líquido y el precio final a partir de la humedad e impureza registradas en boleta, según el grano. No usa datos de Google Sheets — todo el cálculo ocurre en esta página.</div>
+    <span class="group-label">Commercial</span>
+    <h2>Moisture and impurity discount</h2>
+    <div class="sub">Calculates the net weight and final price from the moisture and impurity recorded on the ticket, based on the grain. Doesn't use Google Sheets data — all calculations happen on this page.</div>
 
     <div class="grain-toggle" id="grainToggle">
-      <button type="button" class="grain-btn" data-grain="soya">Soya</button>
-      <button type="button" class="grain-btn" data-grain="maiz">Maíz</button>
-      <button type="button" class="grain-btn active" data-grain="sorgo">Sorgo</button>
+      <button type="button" class="grain-btn" data-grain="soya">Soybean</button>
+      <button type="button" class="grain-btn" data-grain="maiz">Corn</button>
+      <button type="button" class="grain-btn active" data-grain="sorgo">Sorghum</button>
     </div>
 
     <div class="calc-layout">
       <div class="calc-card">
         <div class="field">
-          <label for="humedadInput">Humedad registrada (%)</label>
-          <input type="number" id="humedadInput" min="0" max="100" step="0.01" placeholder="Ej. 18.30">
+          <label for="humedadInput">Moisture recorded (%)</label>
+          <input type="number" id="humedadInput" min="0" max="100" step="0.01" placeholder="E.g. 18.30">
         </div>
         <div class="field">
-          <label for="impurezaInput">Impureza registrada (%)</label>
-          <input type="number" id="impurezaInput" min="0" max="100" step="0.01" placeholder="Ej. 5.30">
-          <div class="ref-note" id="refNote">Referencia (Sorgo): Humedad 14.00% · Impureza 1.00%</div>
+          <label for="impurezaInput">Impurity recorded (%)</label>
+          <input type="number" id="impurezaInput" min="0" max="100" step="0.01" placeholder="E.g. 5.30">
+          <div class="ref-note" id="refNote">Reference (Sorghum): Moisture 14.00% · Impurity 1.00%</div>
         </div>
         <div class="field">
-          <label for="pesoInput">Peso neto (Kg)</label>
-          <input type="number" id="pesoInput" min="0" step="0.01" placeholder="Ej. 32120">
+          <label for="pesoInput">Net weight (Kg)</label>
+          <input type="number" id="pesoInput" min="0" step="0.01" placeholder="E.g. 32120">
         </div>
         <div class="field">
-          <label for="precioInput">Precio neto (Bs/QQ)</label>
-          <input type="number" id="precioInput" min="0" step="0.01" placeholder="Ej. 75.00">
+          <label for="precioInput">Net price (Bs/QQ)</label>
+          <input type="number" id="precioInput" min="0" step="0.01" placeholder="E.g. 75.00">
         </div>
       </div>
 
       <div class="result-card">
-        <div id="statusBanner" class="status-banner">Completa los datos para ver el resultado.</div>
+        <div id="statusBanner" class="status-banner">Fill in the data to see the result.</div>
 
         <div class="headline-numbers">
           <div class="headline-number">
             <div class="value pending" id="precioTotalValue">—</div>
-            <div class="label">Precio total del peso neto (Bs)</div>
+            <div class="label">Total price of net weight (Bs)</div>
           </div>
           <div class="headline-number">
             <div class="value pending" id="precioUnitarioValue">—</div>
-            <div class="label">Precio unitario (Bs/qq)</div>
+            <div class="label">Unit price (Bs/qq)</div>
           </div>
         </div>
 
-        <div class="breakdown-title">Detalle del cálculo</div>
+        <div class="breakdown-title">Calculation detail</div>
         <div class="breakdown">
-          <div class="breakdown-row"><span class="k">Humedad de referencia (C)</span><span class="v" id="out-C">—</span></div>
-          <div class="breakdown-row"><span class="k">Impureza de referencia (D)</span><span class="v" id="out-D">—</span></div>
-          <div class="breakdown-row"><span class="k">Humedad en exceso (E)<span class="formula">A−C</span></span><span class="v" id="out-E">—</span></div>
-          <div class="breakdown-row"><span class="k">Impureza en exceso (F)<span class="formula">B−D</span></span><span class="v" id="out-F">—</span></div>
-          <div class="breakdown-row"><span class="k">Descuento por humedad (G)<span class="formula">E/(1−C), mín. 0%</span></span><span class="v" id="out-G">—</span></div>
-          <div class="breakdown-row"><span class="k">Descuento por impureza (H)<span class="formula">F/(1−D), mín. 0%</span></span><span class="v" id="out-H">—</span></div>
-          <div class="breakdown-row"><span class="k">Descuento total (I)<span class="formula">G+H</span></span><span class="v" id="out-I">—</span></div>
-          <div class="breakdown-row"><span class="k">Descuento total Kg (K)<span class="formula">I×J</span></span><span class="v" id="out-K">—</span></div>
-          <div class="breakdown-row"><span class="k">Peso líquido (L)<span class="formula">J−K</span></span><span class="v" id="out-L">—</span></div>
-          <div class="breakdown-row"><span class="k">Peso líquido qq (O)<span class="formula">L/1000×21.74</span></span><span class="v" id="out-O">—</span></div>
+          <div class="breakdown-row"><span class="k">Reference moisture (C)</span><span class="v" id="out-C">—</span></div>
+          <div class="breakdown-row"><span class="k">Reference impurity (D)</span><span class="v" id="out-D">—</span></div>
+          <div class="breakdown-row"><span class="k">Excess moisture (E)<span class="formula">A−C</span></span><span class="v" id="out-E">—</span></div>
+          <div class="breakdown-row"><span class="k">Excess impurity (F)<span class="formula">B−D</span></span><span class="v" id="out-F">—</span></div>
+          <div class="breakdown-row"><span class="k">Moisture discount (G)<span class="formula">E/(1−C), min. 0%</span></span><span class="v" id="out-G">—</span></div>
+          <div class="breakdown-row"><span class="k">Impurity discount (H)<span class="formula">F/(1−D), min. 0%</span></span><span class="v" id="out-H">—</span></div>
+          <div class="breakdown-row"><span class="k">Total discount (I)<span class="formula">G+H</span></span><span class="v" id="out-I">—</span></div>
+          <div class="breakdown-row"><span class="k">Total discount Kg (K)<span class="formula">I×J</span></span><span class="v" id="out-K">—</span></div>
+          <div class="breakdown-row"><span class="k">Clean weight (L)<span class="formula">J−K</span></span><span class="v" id="out-L">—</span></div>
+          <div class="breakdown-row"><span class="k">Clean weight qq (O)<span class="formula">L/1000×21.74</span></span><span class="v" id="out-O">—</span></div>
         </div>
       </div>
     </div>
@@ -342,12 +342,12 @@
 </main>
 
 <script>
-// Humedad/Impureza de referencia per grain — confirmed against real
-// examples (Sorgo 14%/1%, Soya 13%/1%, Maíz same as Sorgo 14%/1%).
+// Moisture/Impurity reference per grain — confirmed against real
+// examples (Sorghum 14%/1%, Soybean 13%/1%, Corn same as Sorghum 14%/1%).
 const GRAIN_REFERENCES = {
-  soya:  { label: 'Soya',  humedad: 13, impureza: 1 },
-  maiz:  { label: 'Maíz',  humedad: 14, impureza: 1 },
-  sorgo: { label: 'Sorgo', humedad: 14, impureza: 1 },
+  soya:  { label: 'Soybean', humedad: 13, impureza: 1 },
+  maiz:  { label: 'Corn',    humedad: 14, impureza: 1 },
+  sorgo: { label: 'Sorghum', humedad: 14, impureza: 1 },
 };
 
 let selectedGrain = 'sorgo';
@@ -362,7 +362,7 @@ const grainToggle = document.getElementById('grainToggle');
 
 function fmt(n, decimals = 2){
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
-  return n.toLocaleString('es-BO', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
 function fmtPct(n){
   return n === null || n === undefined || Number.isNaN(n) ? '—' : `${fmt(n)}%`;
@@ -379,7 +379,7 @@ grainToggle.querySelectorAll('.grain-btn').forEach(btn => {
 
 function updateRefNote(){
   const ref = GRAIN_REFERENCES[selectedGrain];
-  refNote.textContent = `Referencia (${ref.label}): Humedad ${fmt(ref.humedad)}% · Impureza ${fmt(ref.impureza)}%`;
+  refNote.textContent = `Reference (${ref.label}): Moisture ${fmt(ref.humedad)}% · Impurity ${fmt(ref.impureza)}%`;
 }
 
 [humedadInput, impurezaInput, pesoInput, precioInput].forEach(el => el.addEventListener('input', recalculate));
@@ -394,9 +394,9 @@ function updateRefNote(){
 //   N = J x M / 1000 x 21.74
 //   O = L / 1000 x 21.74
 //   Q = N / O
-// A negative "en exceso" (registered below the reference) floors that
+// A negative "excess" (registered below the reference) floors that
 // discount at 0% rather than going negative — confirmed against two
-// worked examples (humedad and impureza both checked separately).
+// worked examples (moisture and impurity both checked separately).
 function recalculate(){
   const ref = GRAIN_REFERENCES[selectedGrain];
   const A = parseFloat(humedadInput.value);
@@ -410,10 +410,10 @@ function recalculate(){
   document.getElementById('out-D').textContent = fmtPct(D);
 
   const missing = [];
-  if (Number.isNaN(A) || A < 0) missing.push('ingresa la humedad registrada');
-  if (Number.isNaN(B) || B < 0) missing.push('ingresa la impureza registrada');
-  if (Number.isNaN(J) || J <= 0) missing.push('ingresa el peso neto');
-  if (Number.isNaN(M) || M <= 0) missing.push('ingresa el precio neto');
+  if (Number.isNaN(A) || A < 0) missing.push('enter the recorded moisture');
+  if (Number.isNaN(B) || B < 0) missing.push('enter the recorded impurity');
+  if (Number.isNaN(J) || J <= 0) missing.push('enter the net weight');
+  if (Number.isNaN(M) || M <= 0) missing.push('enter the net price');
 
   const rows = ['out-E', 'out-F', 'out-G', 'out-H', 'out-I', 'out-K', 'out-L', 'out-O'];
   const precioTotalEl = document.getElementById('precioTotalValue');
@@ -424,7 +424,7 @@ function recalculate(){
     precioTotalEl.textContent = '—'; precioTotalEl.className = 'value pending';
     precioUnitarioEl.textContent = '—'; precioUnitarioEl.className = 'value pending';
     statusBanner.style.display = 'block';
-    statusBanner.textContent = 'Completa los datos para ver el resultado: ' + missing.join(', ') + '.';
+    statusBanner.textContent = 'Fill in the data to see the result: ' + missing.join(', ') + '.';
     return;
   }
   statusBanner.style.display = 'none';
