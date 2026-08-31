@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Precios agropecuarios · Bolivia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root{
+    --bg: #171B18;
+    --bg-panel: #1E231F;
+    --line: #33392F;
+    --text: #EDEAD4;
+    --text-dim: #9BA192;
+    --grain: #D9A441;
+    --grain-dim: #6B5729;
+    --soy: #8CAE7C;
+    --soy-dim: #3E4F35;
+    --freight: #7FA6C4;
+    --freight-dim: #35434E;
+    --costos: #C97A6B;
+    --costos-dim: #4E3430;
+    --radius: 6px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    line-height:1.6;
+    padding:0 0 80px;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  header{
+    padding:48px 32px 32px;
+    border-bottom:1px solid var(--line);
+    max-width:1080px;
+    margin:0 auto;
+  }
+  header .eyebrow{
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    font-size:11px;
+    margin-bottom:10px;
+  }
+  header h1{font-size:32px;}
+  header p{color:var(--text-dim); margin-top:10px; font-size:13px;}
+  .page-nav{
+    display:flex;
+    gap:10px;
+    margin-top:22px;
+  }
+  .page-nav a{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    padding:8px 16px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    color:var(--text-dim);
+    text-decoration:none;
+  }
+  .page-nav a:hover{color:var(--text); border-color:var(--text-dim);}
+  .page-nav a.active{background:var(--bg-panel); color:var(--text); border-color:var(--text-dim);}
+  main{max-width:1080px; margin:0 auto; padding:0 32px;}
+  section{margin-top:0;}
+  section:first-of-type{margin-top:40px;}
+  section > h2{
+    font-size:20px;
+    margin-bottom:4px;
+  }
+  .sub{color:var(--text-dim); font-size:12px; margin-bottom:20px;}
+  .footnote{
+    color:var(--text-dim);
+    font-size:11px;
+    line-height:1.6;
+    margin:20px 0 0;
+    font-style:italic;
+  }
+  .group-label{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    padding:4px 10px;
+    border-radius:999px;
+    margin-bottom:16px;
+  }
+  .group-label.grain{color:var(--grain); background:var(--grain-dim);}
+  .group-label.soy{color:var(--soy); background:var(--soy-dim);}
+  .group-label.freight{color:var(--freight); background:var(--freight-dim);}
+  .group-label.costos{color:var(--costos); background:var(--costos-dim);}
+  .chart-panel{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-bottom:24px;
+  }
+  .chart-panel canvas{max-height:280px;}
+  .chart-filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .filter-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:6px 12px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--text-dim);
+    cursor:pointer;
+  }
+  .filter-chip:hover{border-color:var(--text-dim); color:var(--text);}
+  .filter-chip.active{background:var(--bg); color:var(--text); border-color:var(--text-dim);}
+  .filter-chip .chip-dot{
+    width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0;
+  }
+  .empty-state{
+    color:var(--text-dim);
+    font-size:13px;
+    padding:32px 0;
+    text-align:center;
+    border:1px dashed var(--line);
+    border-radius:var(--radius);
+  }
+
+  /* FOB / FCA product cards (Hoja de costos Rosario / Lima) — based on the
+     provided sketch: a two-line label block on top, divided from a big
+     number below, restyled to match the page's dark theme. */
+  .market-title{
+    text-align:center;
+  }
+  .costos-subhead{
+    font-family:'Fraunces', serif;
+    font-size:18px;
+    font-weight:500;
+    color:var(--text);
+    margin-top:8px;
+  }
+  /* internal separator between FOB/FCA (and Rosario/Lima blocks) — a
+     gradient line that fades in from both edges and meets/brightens at
+     the center, clearly visible but flatter than the major section
+     dividers (no glow, no marker dot). */
+  .subtle-divider{
+    height:2px;
+    margin:32px 0;
+    background:linear-gradient(90deg,
+      transparent 0%,
+      var(--line) 22%,
+      var(--costos) 50%,
+      var(--line) 78%,
+      transparent 100%);
+  }
+  /* two parallel gradient lines, used right before each market's title
+     to mark the start of a new market's data. */
+  .double-line-divider{
+    height:6px;
+    margin:28px 0 20px;
+    background:
+      linear-gradient(90deg, transparent 0%, var(--costos) 50%, transparent 100%) top / 100% 2px no-repeat,
+      linear-gradient(90deg, transparent 0%, var(--costos) 50%, transparent 100%) bottom / 100% 2px no-repeat;
+  }
+  .fob-subsection{
+    margin-bottom:28px;
+  }
+  .fob-subsection-label{
+    color:var(--text-dim);
+    font-size:12px;
+    margin-bottom:12px;
+  }
+  .fob-section-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+  }
+  /* column-stacked layout for Mercado Exterior: N columns, each holding
+     its own vertical stack of square cards (unlike fob-section-grid,
+     which fills left-to-right row by row). */
+  .stack-grid{
+    display:flex;
+    gap:14px;
+    margin-bottom:24px;
+  }
+  .stack-column{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  /* centered row for standalone cards not tied to the grid's columns
+     (Costo FCA SCZ Grano / Costo de Maquila) — natural card width, just
+     centered as a group rather than stretched into the column layout. */
+  .centered-row{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    margin-bottom:24px;
+  }
+  .centered-row .fob-card{
+    flex:0 1 220px;
+  }
+  @media (max-width:640px){
+    .stack-grid{flex-wrap:wrap;}
+    .stack-column{flex:1 1 45%;}
+  }
+  .fob-card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .fob-card.span-2{
+    grid-column:span 2;
+  }
+  .fob-card .fob-card-header{
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+    background:rgba(0,0,0,0.15);
+  }
+  .fob-card .fob-card-header .l1{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--card-color, var(--costos));
+  }
+  .fob-card .fob-card-header .l2{
+    font-family:'Fraunces', serif;
+    font-size:15px;
+    color:var(--text);
+    margin-top:2px;
+  }
+  .fob-card .fob-card-body{
+    padding:16px;
+    text-align:center;
+  }
+  .fob-card .fob-card-body .value{
+    font-family:'Fraunces', serif;
+    font-size:26px;
+    font-weight:500;
+    color:var(--text);
+    line-height:1;
+  }
+  .fob-card .fob-card-body .value.placeholder{
+    color:var(--text-dim);
+  }
+  .fob-card .fob-card-body .value.result-text{
+    font-size:17px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+  }
+  .fob-card .fob-card-body .unit{
+    font-size:10.5px;
+    color:var(--text-dim);
+    margin-top:6px;
+  }
+  /* Min/Max footer on a FOB card, e.g. FOB Desaguadero — Min bottom-left,
+     Max bottom-right, per the provided sketch. */
+  .fob-card .fob-card-body .minmax-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:12px;
+    padding-top:10px;
+    border-top:1px dashed var(--line);
+    font-size:10px;
+    color:var(--text-dim);
+  }
+  /* split card body — two subsections side by side under one header,
+     e.g. Mercado Exterior's "Mercado" value next to its "FCA SC" value */
+  .fob-card .fob-card-body.split{
+    display:flex;
+    padding:0;
+    text-align:center;
+  }
+  .fob-card .fob-card-body.split .split-half{
+    flex:1;
+    padding:14px 10px;
+  }
+  .fob-card .fob-card-body.split .split-half:first-child{
+    border-right:1px solid var(--line);
+  }
+  .fob-card .fob-card-body.split .split-label{
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--text-dim);
+    margin-bottom:6px;
+  }
+  .fob-card .fob-card-body.split .value{
+    font-size:19px;
+  }
+  @media (max-width:640px){
+    .fob-section-grid{grid-template-columns:repeat(2, 1fr);}
+    .fob-card.span-2{grid-column:span 2;}
+  }
+
+  /* dividers between major sections — a gradient line with a small glowing
+     marker in the middle, colored to match the section that follows */
+  .section-divider{
+    margin:48px 0;
+    height:1px;
+    background:linear-gradient(90deg,
+      transparent 0%,
+      var(--line) 12%,
+      var(--line) 88%,
+      transparent 100%);
+    position:relative;
+  }
+  .section-divider::before{
+    content:'';
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--divider-color, var(--costos));
+    box-shadow:0 0 0 5px var(--bg), 0 0 14px 1px var(--divider-color, var(--costos));
+  }
+  .section-divider.divider-grain{ --divider-color: var(--grain); }
+  .section-divider.divider-soy{ --divider-color: var(--soy); }
+  .section-divider.divider-freight{ --divider-color: var(--freight); }
+
+  /* manual entry module */
+  #manual-entry{
+    padding-top:8px;
+  }
+  .entry-card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px;
+  }
+  .entry-cta{
+    display:inline-block;
+    margin-top:4px;
+    padding:12px 24px;
+    background:var(--grain);
+    color:#1A1500;
+    font-weight:700;
+    text-decoration:none;
+    border-radius:4px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+  }
+  .entry-cta:hover{opacity:0.9;}
+  @media (max-width:640px){
+    header{padding:32px 20px 24px;}
+    main{padding:0 20px;}
+    header h1{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Reporte de mercado · actualizado periódicamente</div>
+  <h1>Precios agropecuarios — Bolivia</h1>
+  <p>Costos de venta · maíz, sorgo y harinas · complejo soya FOB · fletes Lima / Arica</p>
+  <nav class="page-nav">
+    <a href="index.html" class="active">Actual</a>
+    <a href="historico.html">Histórico</a>
+    <a href="calculadora.html">Calculadora</a>
+  </nav>
+</header>
+
+<main>
+
+  <section id="costos-section">
+    <span class="group-label costos">Precios de mercado</span>
+
+    <h2 class="market-title">Mercado Exterior</h2>
+    <div class="sub market-title">Soya grano, Harina Solvente y Aceite — Rosario / Chicago / Desaguadero, y bases vs. Chicago</div>
+
+    <div id="mercadoExtPreciosGrid" class="stack-grid"></div>
+
+    <div id="mercadoExtResumenRow" class="centered-row"></div>
+
+    <div class="subtle-divider"></div>
+
+    <div id="mercadoExtBaseGrid" class="stack-grid"></div>
+
+    <div id="mercadoExtEmpty" class="empty-state">Aún no hay datos de Mercado Exterior. Se toman de la hoja Mercado Exterior.</div>
+
+    <p class="footnote">*Mercado: precio tomado directamente de la página de referencia correspondiente. FCA SC: ese mismo precio, neto de los costos de exportación y transporte aplicables (FCA Santa Cruz).</p>
+
+    <div class="double-line-divider"></div>
+    <h2 class="market-title">Venta de soja — mercado Rosario</h2>
+    <div class="sub market-title">FOB Pto Aguirre y FCA SCZ (Montero) por producto</div>
+
+    <div class="fob-subsection">
+      <div class="fob-subsection-label">FOB Pto Aguirre</div>
+      <div id="fobGridFob" class="fob-section-grid"></div>
+    </div>
+
+    <div class="subtle-divider"></div>
+
+    <div class="fob-subsection">
+      <div class="fob-subsection-label">FCA SCZ (Montero)</div>
+      <div id="fobGridFca" class="fob-section-grid"></div>
+    </div>
+
+    <div id="fobEmpty" class="empty-state">Aún no hay datos de FOB / FCA. Se toman de la hoja de costos Rosario.</div>
+
+    <div class="double-line-divider lima-subsection"></div>
+
+    <div class="lima-subsection" style="text-align:center;">
+      <div class="costos-subhead">Venta de soja — mercado Desaguadero</div>
+      <div class="sub">FOB Desaguadero y FCA SCZ (Montero) por producto</div>
+    </div>
+
+    <div class="fob-subsection lima-subsection">
+      <div class="fob-subsection-label">FOB Desaguadero</div>
+      <div id="limaGridFob" class="fob-section-grid"></div>
+    </div>
+
+    <div class="subtle-divider lima-subsection"></div>
+
+    <div class="fob-subsection lima-subsection">
+      <div class="fob-subsection-label">FCA SCZ (Montero)</div>
+      <div id="limaGridFca" class="fob-section-grid"></div>
+    </div>
+
+    <div id="limaEmpty" class="empty-state">Aún no hay datos de costos de Desaguadero. Se toman de la hoja de costos Lima.</div>
+  </section>
+
+  <div class="section-divider divider-grain"></div>
+
+  <section id="grains-section">
+    <span class="group-label grain">Granos</span>
+    <h2>Maíz, sorgo y harinas</h2>
+    <div class="sub">Cochabamba · Santa Cruz · Anapo</div>
+    <div class="chart-panel">
+      <div id="grainsFilters" class="chart-filters"></div>
+      <canvas id="grainsChart"></canvas>
+      <div id="grainsEmpty" class="empty-state">Aún no hay datos. Agregue un registro con el formulario abajo.</div>
+    </div>
+  </section>
+
+  <div class="section-divider divider-soy"></div>
+
+  <section id="soy-section">
+    <span class="group-label soy">Complejo soya</span>
+    <h2>Soya, aceite y torta — FOB</h2>
+    <div class="sub">Perú · Bolivia · Chicago · Argentina</div>
+    <div class="chart-panel">
+      <div id="soyFilters" class="chart-filters"></div>
+      <canvas id="soyChart"></canvas>
+      <div id="soyEmpty" class="empty-state">Aún no hay datos. Agregue un registro con el formulario abajo.</div>
+    </div>
+  </section>
+
+  <div class="section-divider divider-freight"></div>
+
+  <section id="freight-section">
+    <span class="group-label freight">Fletes</span>
+    <h2>Lima y Arica</h2>
+    <div class="chart-panel">
+      <div id="freightFilters" class="chart-filters"></div>
+      <canvas id="freightChart"></canvas>
+      <div id="freightEmpty" class="empty-state">Aún no hay datos. Agregue un registro con el formulario abajo.</div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="manual-entry">
+    <h2>Agregar datos manualmente</h2>
+    <div class="sub">Use el formulario para registrar nuevos precios. Los datos se sincronizan al panel automáticamente cada hora.</div>
+    <div class="entry-card">
+      <a class="entry-cta" href="https://forms.gle/GqhYcpGjx5DVxvRJ9" target="_blank" rel="noopener">
+        Abrir formulario de registro →
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ---- field schema (kept so chart rendering can group price series) ----
+const GRAIN_PRODUCTS = [
+  {key:'maiz', label:'Maíz'},
+  {key:'sorgo', label:'Sorgo'},
+  {key:'harina_integral', label:'H. Integral'},
+  {key:'harina_solvente', label:'H. Solvente'},
+];
+const GRAIN_REGIONS = [
+  {key:'cbba', label:'Cochabamba'},
+  {key:'scz', label:'Santa Cruz'},
+  {key:'anapo', label:'Anapo'},
+];
+const SOY_PRODUCTS = [
+  {key:'soya_fob', label:'Soya FOB'},
+  {key:'aceite_fob', label:'Aceite FOB'},
+  {key:'torta_soya_fob', label:'Torta de soya FOB'},
+];
+const SOY_REGIONS = [
+  {key:'peru', label:'Perú'},
+  {key:'bolivia', label:'Bolivia'},
+  {key:'chicago', label:'Chicago'},
+  {key:'argentina', label:'Argentina'},
+];
+const FREIGHT_ROUTES = [
+  {key:'lima', label:'Lima'},
+  {key:'arica', label:'Arica'},
+];
+
+// "Hoja de costos Rosario" — per-product FOB / FCA cards
+const VENTA_SOJA_PRODUCTS = [
+  {key:'grano', label:'Grano', color:'var(--soy)'},
+  {key:'solvente', label:'Solvente', color:'var(--freight)'},
+  {key:'aceite', label:'Aceite', color:'var(--grain)'},
+];
+
+// ---- charts -----------------------------------------------------------
+async function loadHistory(){
+  try {
+    const res = await fetch('processed/history.json', {cache:'no-store'});
+    if (!res.ok) return [];
+    return await res.json();
+  } catch { return []; }
+}
+
+// The "date" field mixes two formats depending on its source: ISO
+// "YYYY-MM-DD" (from the costos sync script) and "DD/MM/YYYY" (from the
+// Google Form's "Fecha" column). Every displayed date is normalized to
+// DD/MM/YY regardless of which format it originally came in as.
+function parseFlexibleDate(d){
+  if (/^\d{4}-\d{2}-\d{2}/.test(d)) {
+    const [y, m, day] = d.split('-').map(Number);
+    return new Date(y, m - 1, day);
+  }
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(d);
+  if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+  return new Date(d);
+}
+
+function toDayMonthYY(d){
+  const date = parseFlexibleDate(d);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = String(date.getFullYear()).slice(-2);
+  return `${day}/${month}/${year}`;
+}
+
+let grainsChart, soyChart, freightChart;
+
+function lineDataset(label, color, points){
+  return {
+    label, data: points, borderColor: color, backgroundColor: color,
+    borderWidth: 2, tension: 0.25, spanGaps: true, pointRadius: 3,
+  };
+}
+
+function baseOptions(){
+  return {
+    responsive: true,
+    animation: false,
+    scales: {
+      x: { ticks: { color: '#9BA192', font: {family:'JetBrains Mono', size: 11} }, grid: { color: '#262B22' } },
+      y: { ticks: { color: '#9BA192', font: {family:'JetBrains Mono', size: 11} }, grid: { color: '#262B22' } },
+    },
+    plugins: {
+      legend: { labels: { color: '#EDEAD4', font: {family:'JetBrains Mono', size: 11}, boxWidth: 12 } },
+    },
+  };
+}
+
+async function renderAllCharts(){
+  const history = await loadHistory();
+  const all = history.slice().sort((a,b) => a.date.localeCompare(b.date));
+  const labels = all.map(s => s.date);
+
+  renderMercadoExterior(all);
+  renderVentaSoja(all);
+  renderCostosLima(all);
+  renderGrains(all, labels);
+  renderSoy(all, labels);
+  renderFreight(all, labels);
+}
+
+function toggleEmpty(id, hasData){
+  document.getElementById(id).style.display = hasData ? 'none' : 'block';
+}
+
+// Builds "Todos" + one chip per dataset. Clicking a chip isolates that
+// line (hides the rest); clicking "Todos" restores all of them.
+function renderFilterChips(containerId, chartGetter, datasets){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  if (datasets.length < 2) return; // nothing to filter with only one line
+
+  function setActive(btn){
+    container.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  const allBtn = document.createElement('button');
+  allBtn.type = 'button';
+  allBtn.className = 'filter-chip active';
+  allBtn.textContent = 'Todos';
+  allBtn.addEventListener('click', () => {
+    const chart = chartGetter();
+    chart.data.datasets.forEach(ds => ds.hidden = false);
+    chart.update();
+    setActive(allBtn);
+  });
+  container.appendChild(allBtn);
+
+  datasets.forEach((ds, idx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'filter-chip';
+    btn.innerHTML = `<span class="chip-dot" style="background:${ds.borderColor}"></span>${ds.label}`;
+    btn.addEventListener('click', () => {
+      const chart = chartGetter();
+      chart.data.datasets.forEach((d, i) => { d.hidden = i !== idx; });
+      chart.update();
+      setActive(btn);
+    });
+    container.appendChild(btn);
+  });
+}
+
+function renderGrains(all, labels){
+  const hasData = all.length > 0;
+  toggleEmpty('grainsEmpty', hasData);
+  document.getElementById('grainsChart').style.display = hasData ? 'block' : 'none';
+  if (!hasData) { document.getElementById('grainsFilters').innerHTML = ''; return; }
+
+  const colors = ['#D9A441', '#C97A3E', '#8B6A2E', '#B99A5F'];
+  const datasets = [];
+  GRAIN_PRODUCTS.forEach((p, i) => {
+    GRAIN_REGIONS.forEach((r, j) => {
+      const points = all.map(s => (s.grains && s.grains[p.key] && s.grains[p.key][r.key] !== undefined) ? s.grains[p.key][r.key] : null);
+      if (points.some(v => v !== null)) {
+        datasets.push(lineDataset(`${p.label} · ${r.label}`, colors[(i*GRAIN_REGIONS.length + j) % colors.length], points));
+      }
+    });
+  });
+  if (grainsChart) grainsChart.destroy();
+  grainsChart = new Chart(document.getElementById('grainsChart'), { type:'line', data:{labels, datasets}, options: baseOptions() });
+  renderFilterChips('grainsFilters', () => grainsChart, datasets);
+}
+
+function renderSoy(all, labels){
+  const hasData = all.length > 0;
+  toggleEmpty('soyEmpty', hasData);
+  document.getElementById('soyChart').style.display = hasData ? 'block' : 'none';
+  if (!hasData) { document.getElementById('soyFilters').innerHTML = ''; return; }
+
+  const colors = ['#8CAE7C', '#6B8F5C', '#4E7A44', '#A9C29B'];
+  const datasets = [];
+  SOY_PRODUCTS.forEach((p, i) => {
+    SOY_REGIONS.forEach((r, j) => {
+      const points = all.map(s => (s.soy_complex && s.soy_complex[p.key] && s.soy_complex[p.key][r.key] !== undefined) ? s.soy_complex[p.key][r.key] : null);
+      if (points.some(v => v !== null)) {
+        datasets.push(lineDataset(`${p.label} · ${r.label}`, colors[(i*SOY_REGIONS.length + j) % colors.length], points));
+      }
+    });
+  });
+  if (soyChart) soyChart.destroy();
+  soyChart = new Chart(document.getElementById('soyChart'), { type:'line', data:{labels, datasets}, options: baseOptions() });
+  renderFilterChips('soyFilters', () => soyChart, datasets);
+}
+
+function renderFreight(all, labels){
+  const hasData = all.length > 0;
+  toggleEmpty('freightEmpty', hasData);
+  document.getElementById('freightChart').style.display = hasData ? 'block' : 'none';
+  if (!hasData) { document.getElementById('freightFilters').innerHTML = ''; return; }
+
+  const colors = ['#7FA6C4', '#5A85A8'];
+  const datasets = FREIGHT_ROUTES.map((r, i) => {
+    const points = all.map(s => (s.freight && s.freight[r.key] !== undefined) ? s.freight[r.key] : null);
+    return lineDataset(r.label, colors[i % colors.length], points);
+  });
+  if (freightChart) freightChart.destroy();
+  freightChart = new Chart(document.getElementById('freightChart'), { type:'line', data:{labels, datasets}, options: baseOptions() });
+  renderFilterChips('freightFilters', () => freightChart, datasets);
+}
+
+const MERCADO_EXT_MARKETS = [
+  {key:'chicago', label:'Chicago', color:'var(--freight)'},
+  {key:'rosario', label:'Rosario', color:'var(--costos)'},
+  {key:'desaguadero', label:'Desaguadero', color:'var(--grain)'},
+];
+const MERCADO_EXT_PRODUCTS = [
+  {key:'soya_grano', label:'Soya grano'},
+  {key:'harina_solvente', label:'Harina Solvente'},
+  {key:'aceite', label:'Aceite'},
+];
+const MERCADO_EXT_BASES = [
+  {key:'rosario_chicago', label:'Base Rosario − Chicago', color:'var(--costos)', route:'venta_soja_rosario'},
+  {key:'desaguadero_chicago', label:'Base Desaguadero − Chicago', color:'var(--grain)', route:'venta_soja_lima'},
+];
+// Mercado Exterior uses "soya_grano/harina_solvente/aceite"; the Venta de
+// soja (Rosario/Lima) sections use "grano/solvente/aceite" for the same
+// products — this maps one to the other.
+const MERCADO_EXT_TO_VENTA_PRODUCT = {
+  soya_grano: 'grano',
+  harina_solvente: 'solvente',
+  aceite: 'aceite',
+};
+
+// Mercado Exterior: two column-stacked grids read as-is from the
+// "MercadoExterior" sheet — no computation, just display.
+// Grid 1: one column per product (Grano/Solvente/Aceite), each holding
+// its 3 market prices stacked vertically (Chicago/Rosario/Desaguadero).
+// Rosario and Desaguadero cards are split — the page's own value next to
+// the matching FCA SCZ (Montero) value already shown under "Venta de
+// soja", so both are visible without scrolling. Chicago has no such
+// counterpart, so it stays a plain single-value card.
+// Grid 2: one column per base type (Rosario-Chicago, Desaguadero-Chicago),
+// each holding its 3 product values stacked vertically, also split — the
+// base value next to that route's "Costo total transporte" value.
+function renderMercadoExterior(all){
+  const withData = all.filter(s => s.costos && s.costos.mercado_exterior);
+  const hasData = withData.length > 0;
+  toggleEmpty('mercadoExtEmpty', hasData);
+
+  const preciosGrid = document.getElementById('mercadoExtPreciosGrid');
+  const baseGrid = document.getElementById('mercadoExtBaseGrid');
+  const resumenRow = document.getElementById('mercadoExtResumenRow');
+  preciosGrid.innerHTML = '';
+  baseGrid.innerHTML = '';
+  resumenRow.innerHTML = '';
+  if (!hasData) return;
+
+  const latest = withData[withData.length - 1];
+  const mx = latest.costos.mercado_exterior;
+
+  // Latest snapshot per route, for the "FCA SC" / "Costo total transporte" values.
+  const rosarioData = all.filter(s => s.costos && s.costos.venta_soja_rosario);
+  const limaData = all.filter(s => s.costos && s.costos.venta_soja_lima);
+  const latestByRoute = {
+    venta_soja_rosario: rosarioData.length ? rosarioData[rosarioData.length - 1].costos.venta_soja_rosario : null,
+    venta_soja_lima: limaData.length ? limaData[limaData.length - 1].costos.venta_soja_lima : null,
+  };
+  const routeByMarket = { rosario: 'venta_soja_rosario', desaguadero: 'venta_soja_lima' };
+
+  // "Resumen operaciones" sheet - Costo FCA SCZ Grano / Costo de Maquila.
+  const resumenData = all.filter(s => s.costos && s.costos.resumen_operaciones);
+  const latestResumen = resumenData.length ? resumenData[resumenData.length - 1] : null;
+  const resumen = latestResumen ? latestResumen.costos.resumen_operaciones : null;
+
+  const precios = mx.precios || {};
+  MERCADO_EXT_PRODUCTS.forEach(p => {
+    const column = document.createElement('div');
+    column.className = 'stack-column';
+    const label = document.createElement('div');
+    label.className = 'fob-subsection-label';
+    label.textContent = p.label;
+    column.appendChild(label);
+
+    MERCADO_EXT_MARKETS.forEach(market => {
+      const values = precios[market.key] || {};
+      const val = values[p.key];
+      const pageValue = val !== undefined ? val.toFixed(2) : '—';
+      const route = routeByMarket[market.key];
+      const ventaData = route ? latestByRoute[route] : null;
+
+      if (route) {
+        const ventaProduct = MERCADO_EXT_TO_VENTA_PRODUCT[p.key];
+        const bCosto = ventaData && ventaData.fca_scz_montero ? ventaData.fca_scz_montero[ventaProduct] : undefined;
+        column.appendChild(buildSplitFobCard(
+          p.label, market.label,
+          'Mercado', pageValue,
+          'FCA SC', bCosto !== undefined ? bCosto.toFixed(2) : '—',
+          market.color
+        ));
+      } else {
+        column.appendChild(buildFobCard(
+          p.label, market.label, pageValue,
+          val !== undefined ? `USD/tm · ${toDayMonthYY(latest.date)}` : 'sin dato',
+          market.color
+        ));
+      }
+    });
+
+    preciosGrid.appendChild(column);
+  });
+
+  // Costo FCA SCZ Grano / Costo de Maquila: a centered row below the main
+  // grid, not tied to the column layout above.
+  if (resumen) {
+    const resumenDate = toDayMonthYY(latestResumen.date);
+    if (resumen.costo_fca_scz_grano !== undefined) {
+      resumenRow.appendChild(buildFobCard(
+        'Costo FCA SCZ', 'Grano',
+        resumen.costo_fca_scz_grano.toFixed(2),
+        `USD/tm · ${resumenDate}`,
+        'var(--costos)'
+      ));
+    }
+    if (resumen.costo_de_maquila !== undefined) {
+      resumenRow.appendChild(buildFobCard(
+        'Costo de', 'Maquila',
+        resumen.costo_de_maquila.toFixed(2),
+        `USD/tm · ${resumenDate}`,
+        'var(--costos)'
+      ));
+    }
+  }
+
+  const base = mx.base || {};
+  MERCADO_EXT_BASES.forEach(b => {
+    const column = document.createElement('div');
+    column.className = 'stack-column';
+    const label = document.createElement('div');
+    label.className = 'fob-subsection-label';
+    label.textContent = b.label;
+    column.appendChild(label);
+
+    const ventaData = latestByRoute[b.route];
+
+    MERCADO_EXT_PRODUCTS.forEach(p => {
+      const val = base[b.key] ? base[b.key][p.key] : undefined;
+      const ventaProduct = MERCADO_EXT_TO_VENTA_PRODUCT[p.key];
+      const costoTransporte = ventaData && ventaData.costo_total_transporte ? ventaData.costo_total_transporte[ventaProduct] : undefined;
+
+      column.appendChild(buildSplitFobCard(
+        'Base', p.label,
+        'Base', val !== undefined ? val.toFixed(2) : '—',
+        'Costo transp.', costoTransporte !== undefined ? costoTransporte.toFixed(2) : '—',
+        b.color
+      ));
+    });
+    baseGrid.appendChild(column);
+  });
+}
+
+function buildFobCard(l1, l2, value, unit, color, extraClass, minVal, maxVal){
+  const card = document.createElement('div');
+  card.className = 'fob-card' + (extraClass ? ' ' + extraClass : '');
+  card.style.setProperty('--card-color', color);
+  const showMinMax = minVal !== undefined || maxVal !== undefined;
+  card.innerHTML = `
+    <div class="fob-card-header">
+      <div class="l1">${l1}</div>
+      <div class="l2">${l2}</div>
+    </div>
+    <div class="fob-card-body">
+      <div class="value${value === '—' ? ' placeholder' : ''}">${value}</div>
+      <div class="unit">${unit}</div>
+      ${showMinMax ? `
+      <div class="minmax-row">
+        <span class="minmax-min">Min ${minVal !== undefined && minVal !== null ? minVal.toFixed(2) : '—'}</span>
+        <span class="minmax-max">Max ${maxVal !== undefined && maxVal !== null ? maxVal.toFixed(2) : '—'}</span>
+      </div>` : ''}
+    </div>
+  `;
+  return card;
+}
+
+// Same header as buildFobCard, but the body is split into two
+// subsections side by side — e.g. Mercado Exterior's own page value next
+// to the corresponding build-de-costo value, so both are visible without
+// having to scroll to a different section.
+function buildSplitFobCard(l1, l2, leftLabel, leftValue, rightLabel, rightValue, color){
+  const card = document.createElement('div');
+  card.className = 'fob-card';
+  card.style.setProperty('--card-color', color);
+  card.innerHTML = `
+    <div class="fob-card-header">
+      <div class="l1">${l1}</div>
+      <div class="l2">${l2}</div>
+    </div>
+    <div class="fob-card-body split">
+      <div class="split-half">
+        <div class="split-label">${leftLabel}</div>
+        <div class="value${leftValue === '—' ? ' placeholder' : ''}">${leftValue}</div>
+      </div>
+      <div class="split-half">
+        <div class="split-label">${rightLabel}</div>
+        <div class="value${rightValue === '—' ? ' placeholder' : ''}">${rightValue}</div>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+// "G - costo de G industrial": < 0 -> INDUSTRIAL, >= 0 -> GRANOS. Returns
+// null while either input is missing, so the box can show a placeholder
+// instead of a wrong result.
+function computeIndG(granoVal, costoVal){
+  if (granoVal === undefined || costoVal === undefined || costoVal === null) return null;
+  return (granoVal - costoVal) < 0 ? 'INDUSTRIAL' : 'GRANOS';
+}
+
+// Renders one metric's row: 3 product cards, and — only when
+// includeDecision is true — a wide "Costo de G industrial" box (spans the
+// Aceite+Solvente columns) and an INDUSTRIAL/GRANOS result box (Grano
+// column). That comparison only applies to the FCA SCZ (Montero) stage.
+// `minMax` (optional) is {min:{grano,solvente,aceite}, max:{...}} — only
+// passed for the FOB Desaguadero row, to show the Min/Max footer from
+// the "Recepción de datos" sheet.
+function renderVentaSojaSection(containerId, metricLabel, values, costoGIndustrial, date, includeDecision, minMax){
+  const grid = document.getElementById(containerId);
+  grid.innerHTML = '';
+  if (!values) return;
+  const displayDate = toDayMonthYY(date);
+
+  VENTA_SOJA_PRODUCTS.forEach(p => {
+    const val = values[p.key];
+    const minVal = minMax && minMax.min ? minMax.min[p.key] : undefined;
+    const maxVal = minMax && minMax.max ? minMax.max[p.key] : undefined;
+    grid.appendChild(buildFobCard(
+      metricLabel, p.label,
+      val !== undefined ? val.toFixed(2) : '—',
+      val !== undefined ? `USD/tm · ${displayDate}` : 'sin dato',
+      p.color, null, minVal, maxVal
+    ));
+  });
+
+  if (!includeDecision) return;
+
+  const costoDisplay = (costoGIndustrial !== undefined && costoGIndustrial !== null)
+    ? costoGIndustrial.toFixed(2) : '—';
+  grid.appendChild(buildFobCard(
+    'Costo de', 'G industrial',
+    costoDisplay,
+    costoDisplay === '—' ? 'por definir' : `USD/tm · ${displayDate}`,
+    'var(--costos)', 'span-2'
+  ));
+
+  const indG = computeIndG(values.grano, costoGIndustrial);
+  const resultCard = buildFobCard(
+    'Resultado', 'Grano vs. industrial',
+    indG !== null ? indG : '—',
+    indG !== null ? 'Grano − costo < 0 → INDUSTRIAL' : 'pendiente costo G industrial',
+    'var(--soy)'
+  );
+  resultCard.querySelector('.value').classList.add('result-text');
+  grid.appendChild(resultCard);
+}
+
+// Costos: FOB Pto Aguirre / FCA SCZ (Montero), each in its own section,
+// read as-is from the "Hoja de costos Rosario" sheet. The costo de G
+// industrial / INDUSTRIAL-GRANOS comparison only exists for the FCA stage
+// (rows "Precio del grano procesado FCA SCZ para Rosario" etc.), so it's
+// only rendered under the FCA section.
+function renderVentaSoja(all){
+  const withData = all.filter(s => s.costos && s.costos.venta_soja_rosario);
+  const hasData = withData.length > 0;
+  toggleEmpty('fobEmpty', hasData);
+
+  document.querySelectorAll('.fob-subsection:not(.lima-subsection), .subtle-divider:not(.lima-subsection)').forEach(el => el.style.display = hasData ? 'block' : 'none');
+  if (!hasData) return;
+
+  const latest = withData[withData.length - 1];
+  const venta = latest.costos.venta_soja_rosario;
+  // Fetched from the sheet as a plain scalar (row "Precio del grano
+  // procesado FCA SCZ para Rosario"), not split by product.
+  const costoGIndustrial = venta.costo_g_industrial;
+
+  renderVentaSojaSection('fobGridFob', 'FOB Pto Aguirre', venta.fob_pto_aguirre, costoGIndustrial, latest.date, false);
+  renderVentaSojaSection('fobGridFca', 'FCA SCZ (Montero)', venta.fca_scz_montero, costoGIndustrial, latest.date, true);
+}
+
+// Venta de soja — mercado Desaguadero: FOB Desaguadero / FCA SCZ (Montero), same card pattern
+// as Rosario, read from its own sheet (costos.venta_soja_lima), including
+// its own Costo de G industrial / INDUSTRIAL-GRANOS decision.
+function renderCostosLima(all){
+  const limaData = all.filter(s => s.costos && s.costos.venta_soja_lima);
+  const hasData = limaData.length > 0;
+  toggleEmpty('limaEmpty', hasData);
+
+  document.querySelectorAll('.lima-subsection').forEach(el => el.style.display = hasData ? 'block' : 'none');
+  if (!hasData) return;
+
+  const latestLima = limaData[limaData.length - 1];
+  const venta = latestLima.costos.venta_soja_lima;
+  const costoGIndustrial = venta.costo_g_industrial;
+
+  const recepcionData = all.filter(s => s.costos && s.costos.recepcion_datos);
+  const minMax = recepcionData.length ? recepcionData[recepcionData.length - 1].costos.recepcion_datos : null;
+
+  renderVentaSojaSection('limaGridFob', 'FOB Desaguadero', venta.fob_desaguadero, costoGIndustrial, latestLima.date, false, minMax);
+  renderVentaSojaSection('limaGridFca', 'FCA SCZ (Montero)', venta.fca_scz_montero, costoGIndustrial, latestLima.date, true);
+}
+
+// ---- init ---------------------------------------------------------------
+renderAllCharts();
+</script>
+
+</body>
+</html>
